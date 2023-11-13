@@ -1,19 +1,19 @@
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.ArrayList;
+
 public class SingletonDB {
     private static SingletonDB instance;
-    private Connection connection;
+    private ArrayList<Product> productsArrayList;
+    private ArrayList<User> usersArrayList;
+    private Factory factory;
 
     private SingletonDB() {
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/motoDb", "root", "qwe12345");
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }
+        productsArrayList = new ArrayList<>();
+        productsArrayList.add(new Product("Motorcycle 1", 15000));
+        productsArrayList.add(new Product("Motorcycle 2", 20000));
+
+        usersArrayList = new ArrayList<>();
+        factory = new Factory(getConnection());
     }
 
     public static SingletonDB getInstance() {
@@ -23,7 +23,37 @@ public class SingletonDB {
         return instance;
     }
 
-    public Connection getConnection() {
-        return connection;
+    public ArrayList<Product> getProductsArrayList() {
+        return productsArrayList;
+    }
+
+    public void addUser(User user) {
+        usersArrayList.add(user);
+    }
+
+    public ArrayList<User> getUsersArrayList() {
+        return usersArrayList;
+    }
+
+    public Factory getFactory() {
+        return factory;
+    }
+
+    public static class Product {
+        private String name;
+        private double price;
+
+        public Product(String name, double price) {
+            this.name = name;
+            this.price = price;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public double getPrice() {
+            return price;
+        }
     }
 }

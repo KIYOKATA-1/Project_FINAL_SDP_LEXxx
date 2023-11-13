@@ -1,9 +1,6 @@
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
-public class Factory implements MotorcycleFactory{
+public class Factory implements MotorcycleFactory {
     private Connection connection;
 
     public Factory(Connection connection) {
@@ -11,8 +8,8 @@ public class Factory implements MotorcycleFactory{
     }
 
     @Override
-    public Motorcycle createMotorcycle(String brand, String model, String color, int maxSpeed) {
-        return new Motorcycle(brand, model, color, maxSpeed);
+    public Motorcycle createMotorcycle(String brand, String model, String color, int maxSpeed, double price) {
+        return new Motorcycle(brand, model, color, maxSpeed, price);
     }
 
     public Motorcycle createMotorcycleFromDatabase(String brand) {
@@ -22,23 +19,16 @@ public class Factory implements MotorcycleFactory{
                 return null;
             }
 
-            String sql = "SELECT model, color, max_speed FROM motorcycles WHERE brand = ?";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, brand);
+            // Assuming you have some default values for demonstration purposes
+            String model = "Default Model";
+            String color = "Default Color";
+            int maxSpeed = 0;
+            double price = 0.0;
 
-            ResultSet resultSet = statement.executeQuery();
-
-            if (resultSet.next()) {
-                String model = resultSet.getString("model");
-                String color = resultSet.getString("color");
-                int maxSpeed = resultSet.getInt("max_speed");
-
-                return createMotorcycle(brand, model, color, maxSpeed);
-            }
-        } catch (SQLException e) {
+            return createMotorcycle(brand, model, color, maxSpeed, price);
+        } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
-
-        return null;
     }
 }
